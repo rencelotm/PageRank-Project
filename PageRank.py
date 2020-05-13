@@ -54,6 +54,17 @@ def vector_e(n):
     return np.ones((n, 1))
 
 
+def initial_score_vector(n):
+    """
+    Initial score vector is a vector who contains the initial score for all nodes --> 1/n
+    :param n: Number of node in the graph.
+    :return: The initial score vector PageRank who each element is 1/n.
+    """
+    vector = vector_e(n)
+    vector[0:] = vector[0:]/n
+    return vector
+
+
 def stochastic_matrix(H, n):
     """
     Compute the stochastic matrix from the probabilistic matrix.
@@ -63,7 +74,6 @@ def stochastic_matrix(H, n):
     """
     a = dangling_node_vector(H, n)
     e = vector_e(n)
-    print(e)
     S = H + a * ((1/n) * e.transpose())
     return S
 
@@ -101,11 +111,11 @@ def power_method(G, n):
     :param n: The len of the matrix
     :return: The eigen vector of the Google's matrix
     """
-    x = (np.ones((n, 1)))
+    x = initial_score_vector(n)
     x_T = x.transpose()
-    for i in range(150):
+    for i in range(n*n):
         x_T = x_T.dot(G)
-    return (1 / n) * x_T
+    return x_T
 
 
 if __name__ == '__main__':
@@ -115,5 +125,4 @@ if __name__ == '__main__':
     with open('matrix.csv') as file:
         matrix = np.matrix(list(csv.reader(file, dialect="excel", delimiter=',', lineterminator='\n')), float)
     print(matrix)
-    print(page_rank_score(matrix))
-
+    print(page_rank_score(matrix))    # lance l'algorithme de PageRank avec α = 0.7
